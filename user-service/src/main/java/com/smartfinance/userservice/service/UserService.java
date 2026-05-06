@@ -13,50 +13,111 @@ import com.smartfinance.userservice.exception.UserAlreadyExistsException;
 import com.smartfinance.userservice.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-import com.smartfinance.userservice.config.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    // ✅ REGISTER USER
     public User registerUser(RegisterRequest request) {
 
-        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new UserAlreadyExistsException("Email already registered");
+        log.info("Creating new user account");
+
+        if(userRepository.findByEmail(
+                request.getEmail()).isPresent()) {
+
+            log.warn(
+                    "User already exists with email: {}",
+                    request.getEmail()
+            );
+
+            throw new UserAlreadyExistsException(
+                    "Email already registered"
+            );
         }
 
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(
+                        passwordEncoder.encode(
+                                request.getPassword()
+                        )
+                )
                 .createdAt(LocalDateTime.now())
                 .build();
 
+        log.info("Saving user to database");
+
         return userRepository.save(user);
-
     }
-    
 
+    // ✅ LOGIN USER
     public String loginUser(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        log.info("Authenticating user");
 
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+        User user = userRepository.findByEmail(
+                request.getEmail()
+        ).orElseThrow(() -> {
+
+            log.error(
+                    "User not found with email: {}",
+                    request.getEmail()
+            );
+
+            return new RuntimeException(
+                    "User not found"
+            );
+        });
+
+        if(!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
+
+            log.error(
+                    "Invalid password for email: {}",
+                    request.getEmail()
+            );
+
+            throw new RuntimeException(
+                    "Invalid password"
+            );
         }
 
-        return jwtUtil.generateToken(user.getEmail());
+        log.info(
+                "JWT token generated successfully"
+        );
+
+        return jwtUtil.generateToken(
+                user.getEmail()
+        );
     }
-    
+
+    // ✅ GET USER BY EMAIL
     public User getUserByEmail(String email) {
+
+        log.info(
+                "Fetching user from database"
+        );
+
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> {
+
+                    log.error(
+                            "User not found with email: {}",
+                            email
+                    );
+
+                    return new RuntimeException(
+                            "User not found"
+                    );
+                });
     }
-    
 }

@@ -16,9 +16,11 @@ public class JwtUtil {
             "mysupersecretkeymysupersecretkey";
 
     private final SecretKey key =
-            Keys.hmacShaKeyFor(SECRET.getBytes());
+            Keys.hmacShaKeyFor(
+                    SECRET.getBytes()
+            );
 
-    // ✅ Validate JWT
+    // ✅ VALIDATE TOKEN
     public boolean validateToken(String token) {
 
         try {
@@ -36,14 +38,15 @@ public class JwtUtil {
         }
     }
 
-    // ✅ Extract Email
+    // ✅ EXTRACT USER EMAIL
     public String extractUser(String token) {
 
-        Claims claims = Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        Claims claims =
+                Jwts.parser()
+                        .verifyWith(key)
+                        .build()
+                        .parseSignedClaims(token)
+                        .getPayload();
 
         return claims.getSubject();
     }

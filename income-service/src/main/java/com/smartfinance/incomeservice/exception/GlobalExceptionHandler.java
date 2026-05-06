@@ -7,21 +7,37 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-@RestControllerAdvice
+import lombok.extern.slf4j.Slf4j;
 
+@RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(
+    public ResponseEntity<Map<String, String>>
+    handleValidationException(
             MethodArgumentNotValidException ex) {
 
-        Map<String, String> errors = new HashMap<>();
+        log.error(
+                "Validation exception occurred: {}",
+                ex.getMessage()
+        );
 
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
+        Map<String, String> errors =
+                new HashMap<>();
 
-        return ResponseEntity.badRequest().body(errors);
+        ex.getBindingResult()
+                .getFieldErrors()
+                .forEach(error -> {
+
+                    errors.put(
+                            error.getField(),
+                            error.getDefaultMessage()
+                    );
+                });
+
+        return ResponseEntity
+                .badRequest()
+                .body(errors);
     }
-
 }

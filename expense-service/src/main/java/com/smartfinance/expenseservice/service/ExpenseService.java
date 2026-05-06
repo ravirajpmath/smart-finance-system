@@ -9,42 +9,82 @@ import com.smartfinance.expenseservice.entity.Expense;
 import com.smartfinance.expenseservice.repository.ExpenseRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final RestTemplate restTemplate;
 
-    // 🔥 get userId from user-service
+    // ✅ GET USER ID
     private Long getUserId(String email) {
 
-        String url = "http://localhost:8081/api/auth/email/" + email;
+        log.info(
+                "Fetching userId from user-service for email: {}",
+                email
+        );
 
-        UserDTO user = restTemplate.getForObject(url, UserDTO.class);
+        String url =
+                "http://USER-SERVICE/api/auth/email/" + email;
+
+        UserDTO user =
+                restTemplate.getForObject(
+                        url,
+                        UserDTO.class
+                );
 
         if (user == null) {
-            throw new RuntimeException("User not found");
+
+            log.error(
+                    "User not found for email: {}",
+                    email
+            );
+
+            throw new RuntimeException(
+                    "User not found"
+            );
         }
 
         return user.getId();
     }
 
-    // ✅ ADD
-    public Expense addExpense(String email, Expense expense) {
+    // ✅ ADD EXPENSE
+    public Expense addExpense(
+            String email,
+            Expense expense) {
 
-        Long userId = getUserId(email);
+        log.info(
+                "Saving expense details to database"
+        );
+
+        Long userId =
+                getUserId(email);
 
         expense.setUserId(userId);
 
-        return expenseRepository.save(expense);
+        Expense savedExpense =
+                expenseRepository.save(expense);
+
+        log.info(
+                "Expense saved successfully"
+        );
+
+        return savedExpense;
     }
 
-    // ✅ GET
-    public List<Expense> getExpenses(String email) {
+    // ✅ GET EXPENSES
+    public List<Expense> getExpenses(
+            String email) {
 
-        Long userId = getUserId(email);
+        log.info(
+                "Fetching expense details from database"
+        );
+
+        Long userId =
+                getUserId(email);
 
         return expenseRepository.findByUserId(userId);
     }

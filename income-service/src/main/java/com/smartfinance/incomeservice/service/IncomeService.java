@@ -9,42 +9,82 @@ import com.smartfinance.incomeservice.entity.Income;
 import com.smartfinance.incomeservice.repository.IncomeRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class IncomeService {
 
     private final IncomeRepository incomeRepository;
     private final RestTemplate restTemplate;
 
-    // 🔥 get userId from user-service
+    // ✅ GET USER ID FROM USER-SERVICE
     private Long getUserId(String email) {
 
-        String url = "http://localhost:8081/api/auth/email/" + email;
+        log.info(
+                "Fetching userId from user-service for email: {}",
+                email
+        );
 
-        UserDTO user = restTemplate.getForObject(url, UserDTO.class);
+        String url =
+                "http://USER-SERVICE/api/auth/email/" + email;
+
+        UserDTO user =
+                restTemplate.getForObject(
+                        url,
+                        UserDTO.class
+                );
 
         if (user == null) {
-            throw new RuntimeException("User not found");
+
+            log.error(
+                    "User not found for email: {}",
+                    email
+            );
+
+            throw new RuntimeException(
+                    "User not found"
+            );
         }
 
         return user.getId();
     }
 
     // ✅ ADD INCOME
-    public Income addIncome(String email, Income income) {
+    public Income addIncome(
+            String email,
+            Income income) {
 
-        Long userId = getUserId(email);
+        log.info(
+                "Saving income details to database"
+        );
+
+        Long userId =
+                getUserId(email);
 
         income.setUserId(userId);
 
-        return incomeRepository.save(income);
+        Income savedIncome =
+                incomeRepository.save(income);
+
+        log.info(
+                "Income saved successfully"
+        );
+
+        return savedIncome;
     }
 
     // ✅ GET INCOME
-    public List<Income> getIncome(String email) {
+    public List<Income> getIncome(
+            String email) {
 
-        Long userId = getUserId(email);
+        log.info(
+                "Fetching income details from database"
+        );
+
+        Long userId =
+                getUserId(email);
 
         return incomeRepository.findByUserId(userId);
     }
