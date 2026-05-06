@@ -14,7 +14,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class User {
 
     @Id
@@ -30,6 +29,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private LocalDateTime createdAt;
+    // ✅ ROLE
+    @Column(nullable = false)
+    private String role;
 
+    private LocalDateTime createdAt;
 }

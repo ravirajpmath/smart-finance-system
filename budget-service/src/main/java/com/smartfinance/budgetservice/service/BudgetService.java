@@ -1,13 +1,16 @@
 package com.smartfinance.budgetservice.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import com.smartfinance.budgetservice.client.ExpenseClient;
+import com.smartfinance.budgetservice.client.IncomeClient;
 import com.smartfinance.budgetservice.dto.BudgetResponse;
+import com.smartfinance.budgetservice.dto.ExpenseDTO;
+import com.smartfinance.budgetservice.dto.IncomeDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,104 +20,62 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BudgetService {
 
-    private final RestTemplate restTemplate;
+    private final IncomeClient incomeClient;
 
-    public BudgetResponse calculateBudget(String userEmail) {
+    private final ExpenseClient expenseClient;
+
+    public BudgetResponse calculateBudget(
+            String userEmail) {
 
         log.info(
                 "Starting budget calculation for user: {}",
                 userEmail
         );
 
-        String incomeUrl =
-                "http://INCOME-SERVICE/api/income";
-
-        String expenseUrl =
-                "http://EXPENSE-SERVICE/api/expense";
-
-        HttpHeaders headers =
-                new HttpHeaders();
-
-        headers.set("X-User", userEmail);
-
-        HttpEntity<String> entity =
-                new HttpEntity<>(headers);
-
-        // ✅ INCOME SERVICE
+        // ✅ FETCH INCOME
         log.info(
-                "Calling income-service"
+                "Fetching income details using Feign Client"
         );
 
-        ResponseEntity<Object[]> incomeResponse =
-                restTemplate.exchange(
-                        incomeUrl,
-                        HttpMethod.GET,
-                        entity,
-                        Object[].class
-                );
+        List<IncomeDTO> incomes =
+                incomeClient.getIncome(userEmail);
 
         double totalIncome = 0;
 
-        if (incomeResponse.getBody() != null) {
+        for (IncomeDTO income : incomes) {
 
-            for (Object obj : incomeResponse.getBody()) {
-
-                Map<?, ?> map =
-                        (Map<?, ?>) obj;
-
-                totalIncome += Double.parseDouble(
-                        map.get("amount").toString()
-                );
-            }
+            totalIncome += income.getAmount();
         }
 
-        // ✅ EXPENSE SERVICE
+        // ✅ FETCH EXPENSES
         log.info(
-                "Calling expense-service"
+                "Fetching expense details using Feign Client"
         );
 
-        ResponseEntity<Object[]> expenseResponse =
-                restTemplate.exchange(
-                        expenseUrl,
-                        HttpMethod.GET,
-                        entity,
-                        Object[].class
-                );
+        List<ExpenseDTO> expenses =
+                expenseClient.getExpenses(userEmail);
 
         double totalExpenses = 0;
 
         Map<String, Double> categoryMap =
                 new HashMap<>();
 
-        if (expenseResponse.getBody() != null) {
+        for (ExpenseDTO expense : expenses) {
 
-            for (Object obj : expenseResponse.getBody()) {
+            totalExpenses += expense.getAmount();
 
-                Map<?, ?> map =
-                        (Map<?, ?>) obj;
-
-                double amount =
-                        Double.parseDouble(
-                                map.get("amount").toString()
-                        );
-
-                String category =
-                        map.get("category").toString();
-
-                totalExpenses += amount;
-
-                categoryMap.put(
-                        category,
-                        categoryMap.getOrDefault(
-                                category,
-                                0.0
-                        ) + amount
-                );
-            }
+            categoryMap.put(
+                    expense.getCategory(),
+                    categoryMap.getOrDefault(
+                            expense.getCategory(),
+                            0.0
+                    ) + expense.getAmount()
+            );
         }
 
         // ✅ TOP CATEGORY
         String topCategory = null;
+
         double max = 0;
 
         for (Map.Entry<String, Double> entry :
@@ -123,6 +84,7 @@ public class BudgetService {
             if (entry.getValue() > max) {
 
                 max = entry.getValue();
+
                 topCategory = entry.getKey();
             }
         }
@@ -134,13 +96,16 @@ public class BudgetService {
 
         // ✅ CALCULATIONS
         double needs = totalIncome * 0.5;
+
         double wants = totalIncome * 0.3;
+
         double savings = totalIncome * 0.2;
 
         double remaining =
                 totalIncome - totalExpenses;
 
         String status;
+
         String advice;
 
         if (totalExpenses > totalIncome) {

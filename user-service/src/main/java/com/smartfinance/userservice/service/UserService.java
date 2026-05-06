@@ -15,6 +15,8 @@ import com.smartfinance.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -50,6 +52,7 @@ public class UserService {
                                 request.getPassword()
                         )
                 )
+                .role(request.getRole())
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -96,7 +99,8 @@ public class UserService {
         );
 
         return jwtUtil.generateToken(
-                user.getEmail()
+                user.getEmail(),
+                user.getRole()
         );
     }
 
@@ -119,5 +123,30 @@ public class UserService {
                             "User not found"
                     );
                 });
+    }
+    
+    // ✅ GET ALL USERS (ADMIN ONLY)
+    public List<User> getAllUsers() {
+
+        log.info(
+                "Fetching all users from database"
+        );
+
+        return userRepository.findAll();
+    }
+
+    // ✅ DELETE USER (ADMIN ONLY)
+    public void deleteUser(Long id) {
+
+        log.info(
+                "Deleting user with id: {}",
+                id
+        );
+
+        userRepository.deleteById(id);
+
+        log.info(
+                "User deleted successfully"
+        );
     }
 }

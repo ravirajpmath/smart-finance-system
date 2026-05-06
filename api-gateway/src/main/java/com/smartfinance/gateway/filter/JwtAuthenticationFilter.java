@@ -32,13 +32,13 @@ public class JwtAuthenticationFilter
                         .getURI()
                         .getPath();
 
-        // ✅ Incoming Request
+        // ✅ LOG REQUEST
         log.info(
                 "Incoming request for path: {}",
                 path
         );
 
-        // ✅ Public Endpoints
+        // ✅ PUBLIC ENDPOINTS
         if (path.startsWith("/api/auth")) {
 
             log.info(
@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter
                         .getHeaders()
                         .getFirst("Authorization");
 
-        // ❌ Missing Token
+        // ❌ TOKEN MISSING
         if (authHeader == null
                 || !authHeader.startsWith("Bearer ")) {
 
@@ -74,7 +74,7 @@ public class JwtAuthenticationFilter
         String token =
                 authHeader.substring(7);
 
-        // ❌ Invalid Token
+        // ❌ INVALID TOKEN
         if (!jwtUtil.validateToken(token)) {
 
             log.error(
@@ -90,20 +90,30 @@ public class JwtAuthenticationFilter
                     .setComplete();
         }
 
-        // ✅ Extract User
+        // ✅ EXTRACT USER
         String user =
                 jwtUtil.extractUser(token);
+
+        // ✅ EXTRACT ROLE
+        String role =
+                jwtUtil.extractRole(token);
 
         log.info(
                 "Authenticated user: {}",
                 user
         );
 
-        // ✅ Forward User Header
+        log.info(
+                "User role: {}",
+                role
+        );
+
+        // ✅ FORWARD HEADERS
         ServerWebExchange modifiedExchange =
                 exchange.mutate()
-                        .request(r ->
-                                r.header("X-User", user)
+                        .request(r -> r
+                                .header("X-User", user)
+                                .header("X-Role", role)
                         )
                         .build();
 
@@ -116,6 +126,7 @@ public class JwtAuthenticationFilter
 
     @Override
     public int getOrder() {
+
         return -1;
     }
 }

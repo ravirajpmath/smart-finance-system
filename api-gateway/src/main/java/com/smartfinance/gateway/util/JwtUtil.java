@@ -38,16 +38,27 @@ public class JwtUtil {
         }
     }
 
+    // ✅ EXTRACT ALL CLAIMS
+    private Claims extractClaims(String token) {
+
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
     // ✅ EXTRACT USER EMAIL
     public String extractUser(String token) {
 
-        Claims claims =
-                Jwts.parser()
-                        .verifyWith(key)
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+        return extractClaims(token)
+                .getSubject();
+    }
 
-        return claims.getSubject();
+    // ✅ EXTRACT ROLE
+    public String extractRole(String token) {
+
+        return extractClaims(token)
+                .get("role", String.class);
     }
 }

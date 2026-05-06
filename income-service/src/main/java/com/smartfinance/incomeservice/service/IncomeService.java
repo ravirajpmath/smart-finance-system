@@ -3,8 +3,8 @@ package com.smartfinance.incomeservice.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import com.smartfinance.incomeservice.client.UserClient;
 import com.smartfinance.incomeservice.entity.Income;
 import com.smartfinance.incomeservice.repository.IncomeRepository;
 
@@ -17,24 +17,19 @@ import lombok.extern.slf4j.Slf4j;
 public class IncomeService {
 
     private final IncomeRepository incomeRepository;
-    private final RestTemplate restTemplate;
 
-    // ✅ GET USER ID FROM USER-SERVICE
+    private final UserClient userClient;
+
+    // ✅ GET USER ID
     private Long getUserId(String email) {
 
         log.info(
-                "Fetching userId from user-service for email: {}",
+                "Fetching userId using Feign Client for email: {}",
                 email
         );
 
-        String url =
-                "http://USER-SERVICE/api/auth/email/" + email;
-
         UserDTO user =
-                restTemplate.getForObject(
-                        url,
-                        UserDTO.class
-                );
+                userClient.getUserByEmail(email);
 
         if (user == null) {
 
