@@ -31,6 +31,39 @@ public class JwtAuthenticationFilter
                 exchange.getRequest()
                         .getURI()
                         .getPath();
+        
+     // ✅ ADD CORS HEADERS
+
+        exchange.getResponse()
+                .getHeaders()
+                .add(
+                    "Access-Control-Allow-Origin",
+                    "http://localhost:4200"
+                );
+
+        exchange.getResponse()
+                .getHeaders()
+                .add(
+                    "Access-Control-Allow-Methods",
+                    "GET,POST,PUT,DELETE,OPTIONS"
+                );
+
+        exchange.getResponse()
+                .getHeaders()
+                .add(
+                    "Access-Control-Allow-Headers",
+                    "*"
+                );
+        
+     // ✅ ALLOW PREFLIGHT CORS REQUESTS
+
+        if (exchange.getRequest()
+                .getMethod()
+                .name()
+                .equals("OPTIONS")) {
+
+            return chain.filter(exchange);
+        }
 
         // ✅ LOG REQUEST
         log.info(

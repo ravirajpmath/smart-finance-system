@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+
+  discovery-server:
+    build: ./discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    networks:
+      - smart-finance-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-server
+    networks:
+      - smart-finance-network
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/user_db
+    depends_on:
+      - discovery-server
+    networks:
+      - smart-finance-network
+
+  income-service:
+    build: ./income-service
+    container_name: income-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/income_db
+    depends_on:
+      - discovery-server
+    networks:
+      - smart-finance-network
+
+  expense-service:
+    build: ./expense-service
+    container_name: expense-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/expense_db
+    depends_on:
+      - discovery-server
+    networks:
+      - smart-finance-network
+
+  budget-service:
+    build: ./budget-service
+    container_name: budget-service
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/budget_db
+    depends_on:
+      - discovery-server
+    networks:
+      - smart-finance-network
+
+networks:
+  smart-finance-network:
+    driver: bridge

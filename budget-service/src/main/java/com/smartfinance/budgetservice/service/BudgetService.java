@@ -149,6 +149,7 @@ public class BudgetService {
                 .advice(advice)
                 .topCategory(topCategory)
                 .categoryAdvice(categoryAdvice)
+                .categoryBreakdown(categoryMap)
                 .build();
     }
 }

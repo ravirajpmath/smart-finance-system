@@ -1,6 +1,7 @@
 package com.smartfinance.userservice.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,6 @@ import com.smartfinance.userservice.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +51,10 @@ public class UserService {
                                 request.getPassword()
                         )
                 )
-                .role(request.getRole())
+
+                // ✅ DEFAULT ROLE
+                .role("USER")
+
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -124,7 +126,7 @@ public class UserService {
                     );
                 });
     }
-    
+
     // ✅ GET ALL USERS (ADMIN ONLY)
     public List<User> getAllUsers() {
 

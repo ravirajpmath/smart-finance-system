@@ -11,10 +11,9 @@ import com.smartfinance.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/auth")
+
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
@@ -66,7 +65,7 @@ public class AuthController {
                 userService.getUserByEmail(email)
         );
     }
-    
+
     // ✅ ADMIN - GET ALL USERS
     @GetMapping("/admin/users")
     public ResponseEntity<?> getAllUsers(
@@ -76,7 +75,6 @@ public class AuthController {
                 "Admin endpoint accessed for fetching all users"
         );
 
-        // ❌ ROLE CHECK
         if (!role.equals("ADMIN")) {
 
             log.warn(
@@ -102,7 +100,6 @@ public class AuthController {
                 "Admin endpoint accessed for deleting user"
         );
 
-        // ❌ ROLE CHECK
         if (!role.equals("ADMIN")) {
 
             log.warn(
