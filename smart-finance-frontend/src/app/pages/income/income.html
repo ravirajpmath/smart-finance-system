@@ -1,0 +1,127 @@
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+      Income Management
+    </h2>
+  
+    <div class="card shadow p-4 mb-5">
+  
+      <form (ngSubmit)="addIncome()">
+  
+        <div class="row">
+  
+          <div class="col-md-3 mb-3">
+  
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Amount"
+              [(ngModel)]="amount"
+              name="amount"
+            >
+  
+          </div>
+  
+          <div class="col-md-3 mb-3">
+  
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Month"
+              [(ngModel)]="month"
+              name="month"
+            >
+  
+          </div>
+  
+          <div class="col-md-3 mb-3">
+  
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Year"
+              [(ngModel)]="year"
+              name="year"
+            >
+  
+          </div>
+  
+          <div class="col-md-3 mb-3">
+  
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Source"
+              [(ngModel)]="source"
+              name="source"
+            >
+  
+          </div>
+  
+        </div>
+  
+        <button class="btn btn-success">
+  
+          Add Income
+  
+        </button>
+  
+      </form>
+  
+    </div>
+  
+    <div class="card shadow p-4">
+  
+      <h4 class="mb-4">
+  
+        Income History
+  
+      </h4>
+  
+      <table class="table table-bordered">
+  
+        <thead>
+  
+          <tr>
+  
+            <th>Amount</th>
+  
+            <th>Month</th>
+  
+            <th>Year</th>
+  
+            <th>Source</th>
+  
+          </tr>
+  
+        </thead>
+  
+        <tbody>
+  
+          <tr *ngFor="let income of incomes">
+  
+            <td>
+              ₹{{ income.amount }}
+            </td>
+  
+            <td>
+              {{ income.month }}
+            </td>
+  
+            <td>
+              {{ income.year }}
+            </td>
+  
+            <td>
+              {{ income.source }}
+            </td>
+  
+          </tr>
+  
+        </tbody>
+  
+      </table>
+  
+    </div>
+  
+  </div>

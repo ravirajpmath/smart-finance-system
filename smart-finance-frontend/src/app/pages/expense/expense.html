@@ -1,0 +1,137 @@
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+      Expense Management
+    </h2>
+  
+    <div class="card shadow p-4 mb-5">
+  
+      <form (ngSubmit)="addExpense()">
+  
+        <div class="row">
+  
+          <div class="col-md-3 mb-3">
+  
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Amount"
+              [(ngModel)]="amount"
+              name="amount"
+            >
+  
+          </div>
+  
+          <div class="col-md-3 mb-3">
+  
+            <select
+              class="form-control"
+              [(ngModel)]="category"
+              name="category"
+            >
+  
+              <option value="">
+                Select Category
+              </option>
+  
+              <option
+                *ngFor="let category of categories"
+                [value]="category"
+              >
+                {{ category }}
+              </option>
+  
+            </select>
+  
+          </div>
+  
+          <div class="col-md-3 mb-3">
+  
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Description"
+              [(ngModel)]="description"
+              name="description"
+            >
+  
+          </div>
+  
+          <div class="col-md-3 mb-3">
+  
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="date"
+              name="date"
+            >
+  
+          </div>
+  
+        </div>
+  
+        <button class="btn btn-danger">
+  
+          Add Expense
+  
+        </button>
+  
+      </form>
+  
+    </div>
+  
+    <div class="card shadow p-4">
+  
+      <h4 class="mb-4">
+  
+        Expense History
+  
+      </h4>
+  
+      <table class="table table-bordered">
+  
+        <thead>
+  
+          <tr>
+  
+            <th>Amount</th>
+  
+            <th>Category</th>
+  
+            <th>Description</th>
+  
+            <th>Date</th>
+  
+          </tr>
+  
+        </thead>
+  
+        <tbody>
+  
+          <tr *ngFor="let expense of expenses">
+  
+            <td>
+              ₹{{ expense.amount }}
+            </td>
+  
+            <td>
+              {{ expense.category }}
+            </td>
+  
+            <td>
+              {{ expense.description }}
+            </td>
+  
+            <td>
+              {{ expense.date }}
+            </td>
+  
+          </tr>
+  
+        </tbody>
+  
+      </table>
+  
+    </div>
+  
+  </div>

@@ -1,0 +1,177 @@
+<div class="container mt-5">
+
+    <h1 class="mb-4">
+      Budget Analytics
+    </h1>
+  
+    <div *ngIf="loading">
+  
+      <div class="alert alert-info">
+  
+        Calculating Budget...
+  
+      </div>
+  
+    </div>
+  
+    <div *ngIf="!loading && budgetData">
+  
+      <!-- TOP CARDS -->
+  
+      <div class="row">
+  
+        <div class="col-md-4 mb-4">
+  
+          <div class="card shadow p-4 text-center">
+  
+            <h5>Total Income</h5>
+  
+            <h2 class="text-success">
+  
+              ₹{{ budgetData.income }}
+  
+            </h2>
+  
+          </div>
+  
+        </div>
+  
+        <div class="col-md-4 mb-4">
+  
+          <div class="card shadow p-4 text-center">
+  
+            <h5>Total Spending</h5>
+  
+            <h2 class="text-danger">
+  
+              ₹{{ budgetData.actualSpending }}
+  
+            </h2>
+  
+          </div>
+  
+        </div>
+  
+        <div class="col-md-4 mb-4">
+  
+          <div class="card shadow p-4 text-center">
+  
+            <h5>Remaining Balance</h5>
+  
+            <h2 class="text-primary">
+  
+              ₹{{ budgetData.remaining }}
+  
+            </h2>
+  
+          </div>
+  
+        </div>
+  
+      </div>
+  
+      <!-- 50/30/20 RULE -->
+  
+      <div class="row">
+  
+        <div class="col-md-4 mb-4">
+  
+          <div class="card shadow p-4 text-center">
+  
+            <h5>Needs (50%)</h5>
+  
+            <h3>
+  
+              ₹{{ budgetData.needs }}
+  
+            </h3>
+  
+          </div>
+  
+        </div>
+  
+        <div class="col-md-4 mb-4">
+  
+          <div class="card shadow p-4 text-center">
+  
+            <h5>Wants (30%)</h5>
+  
+            <h3>
+  
+              ₹{{ budgetData.wants }}
+  
+            </h3>
+  
+          </div>
+  
+        </div>
+  
+        <div class="col-md-4 mb-4">
+  
+          <div class="card shadow p-4 text-center">
+  
+            <h5>Savings (20%)</h5>
+  
+            <h3>
+  
+              ₹{{ budgetData.savings }}
+  
+            </h3>
+  
+          </div>
+  
+        </div>
+  
+      </div>
+  
+      <!-- STATUS -->
+  
+      <div class="card shadow p-4 mt-4">
+  
+        <h4 class="mb-3">
+  
+          Financial Status
+  
+        </h4>
+  
+        <h2>
+  
+          {{ budgetData.status }}
+  
+        </h2>
+  
+        <p>
+  
+          {{ budgetData.advice }}
+  
+        </p>
+  
+      </div>
+  
+      <!-- CATEGORY ANALYSIS -->
+  
+      <div class="card shadow p-4 mt-4">
+  
+        <h4 class="mb-3">
+  
+          Top Spending Category
+  
+        </h4>
+  
+        <h2>
+  
+          {{ budgetData.topCategory }}
+  
+        </h2>
+  
+        <p>
+  
+          {{ budgetData.categoryAdvice }}
+  
+        </p>
+  
+      </div>
+  
+    </div>
+  
+  </div>

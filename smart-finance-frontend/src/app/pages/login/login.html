@@ -1,0 +1,47 @@
+<form (ngSubmit)="loginUser()">
+
+    <div class="mb-3">
+  
+      <label class="form-label">
+        Email
+      </label>
+  
+      <input
+        type="email"
+        class="form-control"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="Enter email"
+      >
+  
+    </div>
+  
+    <div class="mb-3">
+  
+      <label class="form-label">
+        Password
+      </label>
+  
+      <input
+        type="password"
+        class="form-control"
+        [(ngModel)]="password"
+        name="password"
+        placeholder="Enter password"
+      >
+  
+    </div>
+  
+    <button class="btn btn-primary w-100">
+      Login
+    </button>
+  
+    <div class="text-center mt-3">
+  
+      <a routerLink="/register">
+        Create Account
+      </a>
+  
+    </div>
+  
+  </form>

@@ -1,0 +1,273 @@
+
+<div *ngIf="budgetData">
+
+  <!-- TOPBAR -->
+
+  <div class="topbar">
+
+    <div>
+
+      <h1>
+        Financial Dashboard
+      </h1>
+
+      <p>
+        Welcome back 👋
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- SUMMARY CARDS -->
+
+  <div class="cards-grid">
+
+    <div class="finance-card income-card">
+
+      <h4>Total Income</h4>
+
+      <h2>
+        ₹{{ budgetData.income }}
+      </h2>
+
+      <p>
+        Needs: ₹{{ budgetData.needs }}
+      </p>
+
+    </div>
+
+    <div class="finance-card expense-card">
+
+      <h4>Total Expense</h4>
+
+      <h2>
+        ₹{{ budgetData.actualSpending }}
+      </h2>
+
+      <p>
+        Wants: ₹{{ budgetData.wants }}
+      </p>
+
+    </div>
+
+    <div class="finance-card balance-card">
+
+      <h4>Balance</h4>
+
+      <h2>
+        ₹{{ budgetData.remaining }}
+      </h2>
+
+      <p>
+        {{ budgetData.status }}
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- QUICK ACTIONS -->
+
+  <div class="actions-section">
+
+    <h3 class="mb-4">
+      Quick Actions
+    </h3>
+
+    <div class="action-buttons">
+
+      <a
+        routerLink="/income"
+        class="action-btn income-btn"
+      >
+        + Add Income
+      </a>
+
+      <a
+        routerLink="/expense"
+        class="action-btn expense-btn"
+      >
+        + Add Expense
+      </a>
+
+      <a
+        routerLink="/budget"
+        class="action-btn budget-btn"
+      >
+        View Analytics
+      </a>
+
+    </div>
+
+  </div>
+
+  <!-- INSIGHTS -->
+
+  <div class="insights-card">
+
+    <h3>
+      Smart Insight
+    </h3>
+
+    <p>
+      {{ budgetData.advice }}
+    </p>
+
+    <hr>
+
+    <h5>
+      Top Spending Category:
+    </h5>
+
+    <h4>
+      {{ budgetData.topCategory }}
+    </h4>
+
+    <p>
+      {{ budgetData.categoryAdvice }}
+    </p>
+
+  </div>
+
+  <!-- BAR CHART -->
+
+  <div class="chart-card mt-5">
+
+    <h3 class="mb-4">
+      Financial Analytics
+    </h3>
+
+    <div
+      style="
+        height: 400px;
+        position: relative;
+      "
+    >
+
+      <canvas
+
+        baseChart
+
+        [data]="barChartData"
+
+        [type]="barChartType"
+
+        [options]="barChartOptions">
+
+      </canvas>
+
+    </div>
+
+  </div>
+
+  <!-- PIE CHART -->
+
+  <div class="chart-card mt-5">
+
+    <h3 class="mb-4">
+      Expense Category Breakdown
+    </h3>
+
+    <div
+      style="
+        width: 450px;
+        height: 450px;
+        margin: auto;
+        position: relative;
+      "
+    >
+
+    <canvas
+
+    baseChart
+  
+    [type]="pieChartType"
+  
+    [datasets]="pieChartDatasets"
+  
+    [labels]="pieChartLabels"
+  
+    [options]="pieChartOptions">
+  
+  </canvas>
+
+    </div>
+
+  </div>
+
+  <!-- RECENT TRANSACTIONS -->
+
+  <div class="transactions-section">
+
+    <!-- RECENT INCOME -->
+
+    <div class="transaction-card">
+
+      <h3 class="mb-4">
+        Recent Income
+      </h3>
+
+      <div
+        *ngFor="let income of recentIncome"
+        class="transaction-item"
+      >
+
+        <div>
+
+          <h5>
+            {{ income.source }}
+          </h5>
+
+          <p>
+            {{ income.month }}
+            {{ income.year }}
+          </p>
+
+        </div>
+
+        <h4 class="text-success">
+          + ₹{{ income.amount }}
+        </h4>
+
+      </div>
+
+    </div>
+
+    <!-- RECENT EXPENSES -->
+
+    <div class="transaction-card">
+
+      <h3 class="mb-4">
+        Recent Expenses
+      </h3>
+
+      <div
+        *ngFor="let expense of recentExpenses"
+        class="transaction-item"
+      >
+
+        <div>
+
+          <h5>
+            {{ expense.category }}
+          </h5>
+
+          <p>
+            {{ expense.description }}
+          </p>
+
+        </div>
+
+        <h4 class="text-danger">
+          - ₹{{ expense.amount }}
+        </h4>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
